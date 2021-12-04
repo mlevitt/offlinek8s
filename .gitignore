@@ -1,3 +1,6 @@
+joinCommand.sh
+*tgz
+registry.crt
 rpms
 images
 networking
