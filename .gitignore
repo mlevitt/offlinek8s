@@ -3,5 +3,4 @@ joinCommand.sh
 registry.crt
 rpms
 images
-networking
 .vagrant
