@@ -39,8 +39,6 @@ echo KUBELET_EXTRA_ARGS=--cgroup-driver=cgroupfs > /etc/sysconfig/kubelet
 systemctl enable kubelet
 systemctl start  kubelet
 
-hostnamectl set-hostname master
-
 cat <<EOF > /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1

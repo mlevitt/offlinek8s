@@ -25,7 +25,7 @@ Vagrant.configure(2) do |config|
   master_ip = IPAddr.new(x.fetch('ip').fetch('master'))
   (1..x.fetch('master').fetch('count')).each do |i|
     c = x.fetch('master')
-    hostname = "master"
+    hostname = "master-%02d" % i
     config.vm.define hostname do |master|
       master.vm.box   = "bento/centos-7.8"
       master.vm.network x.fetch('net').fetch('network_type'), ip: IPAddr.new(master_ip.to_i + i - 1, Socket::AF_INET).to_s
