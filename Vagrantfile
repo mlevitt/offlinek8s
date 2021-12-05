@@ -4,12 +4,23 @@
 require 'ipaddr'
 require 'yaml'
 
+required_plugins = [ "vagrant-hostmanager" ]
+required_plugins.each do |plugin|
+  if not Vagrant.has_plugin?(plugin)
+    raise "The vagrant plugin #{plugin} is required. Please run `vagrant plugin install #{plugin}`"
+  end
+end
+
 x = YAML.load_file(File.join(File.dirname(__FILE__), 'config.yaml'))
-puts "Config: #{x.inspect}\n\n"
 
 $private_nic_type = x.fetch('net').fetch('private_nic_type')
 
 Vagrant.configure(2) do |config|
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = false
+  config.hostmanager.manage_guest = true
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = true
 
   master_ip = IPAddr.new(x.fetch('ip').fetch('master'))
   (1..x.fetch('master').fetch('count')).each do |i|
