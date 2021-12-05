@@ -5,7 +5,8 @@ rpmDir=/vagrant/rpms
 registryHostName=registry
 registryHostIP=192.168.120.90
 grep $registryHostIP /etc/hosts || {
-cat >> /etc/hosts << EOF
+	perl -ni -e 'm|master| || print' /etc/hosts
+	cat >> /etc/hosts << EOF
 192.168.120.100 master
 192.168.120.90 registry
 EOF
