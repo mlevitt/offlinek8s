@@ -4,7 +4,7 @@ master:
   cpus: 2
   memory: 1800
 worker:
-  count: 0
+  count: 1
   cpus: 2
   memory: 1800
 ip:

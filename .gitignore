@@ -4,3 +4,4 @@ registry.crt
 rpms
 images
 .vagrant
+join*
