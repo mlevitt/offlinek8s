@@ -22,6 +22,24 @@ Vagrant.configure(2) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
 
+  registryServer_ip = IPAddr.new(x.fetch('ip').fetch('registryServer'))
+  (1..x.fetch('registry').fetch('count')).each do |i|
+    c = x.fetch('registry')
+    hostname = "registry"
+    config.vm.define hostname do |registry|
+      registry.vm.box   = "bento/centos-7.8"
+      registry.vm.network x.fetch('net').fetch('network_type'), ip: IPAddr.new(registryServer_ip.to_i + i - 1, Socket::AF_INET).to_s
+      registry.vm.hostname = hostname
+      registry.vm.provision "shell", path: "makeRegistry.sh", args: [x.fetch('ip').fetch('nfsServer'), x.fetch('admin_password')]
+      registry.vm.provider "virtualbox" do |v|
+        v.cpus = c.fetch('cpus')
+        v.linked_clone = true if Gem::Version.new(Vagrant::VERSION) >= Gem::Version.new('1.8.0') and x.fetch('linked_clones')
+        v.memory = c.fetch('memory')
+        v.name = hostname
+      end
+    end
+  end
+
   master_ip = IPAddr.new(x.fetch('ip').fetch('master'))
   (1..x.fetch('master').fetch('count')).each do |i|
     c = x.fetch('master')
@@ -30,13 +48,13 @@ Vagrant.configure(2) do |config|
       master.vm.box   = "bento/centos-7.8"
       master.vm.network x.fetch('net').fetch('network_type'), ip: IPAddr.new(master_ip.to_i + i - 1, Socket::AF_INET).to_s
       master.vm.hostname = hostname
-      master.vm.provision "shell", path: "master.sh", args: [x.fetch('ip').fetch('server'), x.fetch('admin_password')]
       master.vm.provider "virtualbox" do |v|
         v.cpus = c.fetch('cpus')
         v.linked_clone = true if Gem::Version.new(Vagrant::VERSION) >= Gem::Version.new('1.8.0') and x.fetch('linked_clones')
         v.memory = c.fetch('memory')
         v.name = hostname
       end
+      master.vm.provision "shell", path: "master.sh", args: [c.fetch('mode'),x.fetch('ip').fetch('nfsServer'), x.fetch('admin_password')]
     end
   end
 
@@ -48,13 +66,13 @@ Vagrant.configure(2) do |config|
       worker.vm.box   = "bento/centos-7.8"
       worker.vm.network x.fetch('net').fetch('network_type'), ip: IPAddr.new(worker_ip.to_i + i - 1, Socket::AF_INET).to_s
       worker.vm.hostname = hostname
-      worker.vm.provision "shell", path: "worker.sh", args: [x.fetch('ip').fetch('server'), x.fetch('admin_password')]
       worker.vm.provider "virtualbox" do |v|
         v.cpus = c.fetch('cpus')
         v.linked_clone = true if Gem::Version.new(Vagrant::VERSION) >= Gem::Version.new('1.8.0') and x.fetch('linked_clones')
         v.memory = c.fetch('memory')
         v.name = hostname
       end
+      worker.vm.provision "shell", path: "worker.sh", args: [x.fetch('ip').fetch('nfsServer'), x.fetch('admin_password')]
     end
   end
 

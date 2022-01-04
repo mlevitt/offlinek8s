@@ -1,14 +1,20 @@
 admin_password: admin
+registry:
+  count: 1
+  cpus: 1
+  memory: 1000
 master:
   count: 1
   cpus: 2
   memory: 1800
+  mode: cluster
 worker:
-  count: 1
+  count: 2
   cpus: 2
-  memory: 1800
+  memory: 4500
 ip:
-  server: 192.168.120.90
+  registryServer: 192.168.120.90
+  nfsServer: 192.168.120.91
   master: 192.168.120.100
   worker:   192.168.120.110
 linked_clones: true

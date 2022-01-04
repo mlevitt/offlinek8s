@@ -5,3 +5,5 @@ rpms
 images
 .vagrant
 join*
+kubeConfig
+docker_reg_certs/
