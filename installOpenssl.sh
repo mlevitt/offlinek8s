@@ -2,8 +2,9 @@
 cd /tmp
 
 update-ca-trust
+yum install -y wget binutils gcc make zlib-devel
 
-[ -e openssl-1.1.1k.tar.gz ] || wget https://ftp.openssl.org/source/openssl-1.1.1k.tar.gz
+[ -e openssl-1.1.1k.tar.gz ] || wget --no-check-certificate https://ftp.openssl.org/source/openssl-1.1.1k.tar.gz
 [ -d openssl-1.1.1k ]        || tar -xzvf openssl-1.1.1k.tar.gz
 cd openssl-1.1.1k
 ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib no-shared zlib-dynamic

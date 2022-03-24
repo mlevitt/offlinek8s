@@ -30,6 +30,7 @@ Vagrant.configure(2) do |config|
       registry.vm.box   = "bento/centos-7.8"
       registry.vm.network x.fetch('net').fetch('network_type'), ip: IPAddr.new(registryServer_ip.to_i + i - 1, Socket::AF_INET).to_s
       registry.vm.hostname = hostname
+      registry.vm.provision "shell", path: "getOfflineContent.sh", args: [x.fetch('ip').fetch('nfsServer'), x.fetch('admin_password')]
       registry.vm.provision "shell", path: "makeRegistry.sh", args: [x.fetch('ip').fetch('nfsServer'), x.fetch('admin_password')]
       registry.vm.provider "virtualbox" do |v|
         v.cpus = c.fetch('cpus')

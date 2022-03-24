@@ -52,8 +52,8 @@ docker images --format " {{.Repository}}:{{.Tag}}" | \
 
 docker tag k8s.gcr.io/coredns/coredns:v1.8.4 registry:5000/coredns:v1.8.4
 docker push registry:5000/coredns:v1.8.4
-docker tag registry:5000/mirrored-flannelcni-flannel-cni-plugin:v1.0.0 registry:5000/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.0
-docker push registry:5000/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.0
+docker tag registry:5000/mirrored-flannelcni-flannel-cni-plugin:v1.0.1 registry:5000/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1
+docker push registry:5000/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1
 
 docker images  --format " {{.Repository}}:{{.Tag}}" | grep $registryHostName
 curl -sX GET https://$registryHostName:5000/v2/_catalog
