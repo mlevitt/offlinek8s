@@ -50,7 +50,6 @@ sudo swapoff -a
 
 source /vagrant/joinCluster.sh
 
-yum -y install nfs-utils
 # grep registry /etc/fstab || {
 #   mkdir -p  /mnt/k8s
 #   cat >> /etc/fstab <<EOF

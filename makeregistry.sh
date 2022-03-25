@@ -4,6 +4,11 @@
 registryHostName=registry
 registryHostIP=192.168.120.90
 
+ls /vagrant/images || {
+    cd /vagrant/
+    tar xzf /vagrant/offline-*.22.tgz
+}
+
 # from https://medium.com/@ifeanyiigili/how-to-setup-a-private-docker-registry-with-a-self-sign-certificate-43a7407a1613
 export rpmDir=/vagrant/rpms
 yum localinstall -y $rpmDir/*.rpm $rpmDir/*/*.rpm|| true
@@ -28,11 +33,22 @@ update-ca-trust
 systemctl enable docker
 systemctl restart docker
 
-ls /vagrant/images || {
+docker images | grep registry  | grep pause || {
     cd /vagrant/
-    tar xzf /vagrant/offline-1.22.tgz
     ls /vagrant/images/* | while read tar; do docker load -i $tar; done
 }
+
+ls /vagrant/images/* | while read tar; do docker load -i $tar; done
+docker images --format " {{.Repository}}:{{.Tag}}" | \
+	grep -v $registryHostName | \
+	perl -pe "s|([^/]*/)(.*)|\1\2\t$registryHostName:5000/\2|" | \
+	while read i l; do docker tag $i $l; done
+
+docker images  --format " {{.Repository}}:{{.Tag}}" | grep k8s.gcr && {
+	docker tag k8s.gcr.io/coredns/coredns:v1.8.4 registry:5000/coredns:v1.8.4
+} 
+
+perl -pi -e 's|image: rancher/|image: registry:5000/|' /vagrant/networking/kube-flannel.yml
 
 docker stop registry || true
 docker rm   registry || true
@@ -44,16 +60,12 @@ docker run -d -p 5000:5000 \
    -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
     registry
 
-ls /vagrant/images/* | while read tar; do docker load -i $tar; done
 docker images --format " {{.Repository}}:{{.Tag}}" | \
-	grep -v $registryHostName | \
 	perl -pe "s|([^/]*/)(.*)|\1\2\t$registryHostName:5000/\2|" | \
-	while read i l; do docker tag $i $l; docker push $l; done
+	grep $registryHostName:5000 | \
+	while read i l; do docker push $l; done
 
-docker tag k8s.gcr.io/coredns/coredns:v1.8.4 registry:5000/coredns:v1.8.4
 docker push registry:5000/coredns:v1.8.4
-docker tag registry:5000/mirrored-flannelcni-flannel-cni-plugin:v1.0.1 registry:5000/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1
-docker push registry:5000/rancher/mirrored-flannelcni-flannel-cni-plugin:v1.0.1
 
 docker images  --format " {{.Repository}}:{{.Tag}}" | grep $registryHostName
 curl -sX GET https://$registryHostName:5000/v2/_catalog

@@ -1,5 +1,5 @@
 joinCommand.sh
-*tgz
+offline*tgz
 registry.crt
 rpms
 images
@@ -7,3 +7,5 @@ images
 join*
 kubeConfig
 docker_reg_certs/
+openssl*tar.gz
+networking

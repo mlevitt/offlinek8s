@@ -1,0 +1,12 @@
+#!/bin/bash -eux
+set -o pipefail
+
+vagrant destroy  -f
+git clean -xdf
+vagrant up registry 2>&1 | tee online || echo expected failure
+vagrant destroy -f registry
+rm -rf .vagrant docker_reg_certs images networking openssl-1.1.1k.tar.gz rpms joinToken joincluster.sh kubeConfig
+
+echo turn off network
+read n turn off network
+time vagrant up 2>&1 | tee offline.log

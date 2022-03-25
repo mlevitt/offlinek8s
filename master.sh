@@ -16,7 +16,7 @@ EOF
 }
 
 yum localinstall -y $rpmDir/*.rpm $rpmDir/*/*.rpm|| true
-yum -y install nfs-utils
+# yum -y install nfs-utils
 grep registry /etc/fstab || {
   mkdir -p  /mnt/k8s
   cat >> /etc/fstab <<EOF

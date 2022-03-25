@@ -1,8 +1,5 @@
 #!/bin/bash -eux
 
-yum -y install nfs-utils nfs-utils-lib
-
-
 systemctl enable nfs-server.service
 systemctl start nfs-server.service
 
