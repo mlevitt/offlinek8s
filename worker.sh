@@ -1,6 +1,7 @@
 #!/bin/bash -eux
 
-version=1.22
+source /vagrant/versionFile
+
 rpmDir=/vagrant/rpms
 registryHostName=registry
 registryHostIP=192.168.120.90

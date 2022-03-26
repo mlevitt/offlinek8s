@@ -4,7 +4,9 @@ echo "$@"
 mode=$1
 
 
-version=1.22
+source /vagrant/versionFile
+perl -pe "s|__SEMVER__|$semanticVersion|" /vagrant/kubeconfig.yml.in > /vagrant/kubeconfig.yml
+
 rpmDir=/vagrant/rpms
 registryHostName=registry
 registryHostIP=192.168.120.90

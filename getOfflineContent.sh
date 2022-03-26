@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 set -o pipefail
 
-version=1.22
+source /vagrant/versionFile
 
 [ -e /vagrant/offline-$version.tgz ] && exit
 

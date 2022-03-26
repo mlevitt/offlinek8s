@@ -9,3 +9,4 @@ kubeConfig
 docker_reg_certs/
 openssl*tar.gz
 networking
+kubeconfig.yml
